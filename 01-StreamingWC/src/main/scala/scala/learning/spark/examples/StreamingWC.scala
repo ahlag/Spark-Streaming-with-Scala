@@ -28,7 +28,7 @@ object StreamingWC {
 
     val wordCountQuery = countsDF.writeStream
                           .format("console")
-                          .outputMode("complete")
+                          .outputMode("complete") // complete/update/insert
                           .option("checkpointLocation", "chk-point-dir")
                           .start()
 

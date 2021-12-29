@@ -12,6 +12,7 @@ object StreamingWC {
       .master("local[3]")
       .appName("Streaming Word Count")
       .config("spark.streaming.stopGracefullyOnShutdown", "true")
+      .config("spark.sql.shuffle.partitions", 3)
       .getOrCreate()
 
     val linesDF = spark.readStream

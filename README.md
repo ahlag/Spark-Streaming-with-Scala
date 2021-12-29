@@ -1,5 +1,7 @@
 ## Spark Streaming Intro
 
+### 01-StreamingWC
+
 1. Creating Spark Streaming Project using your IDE
 2. Configuring and using Application logs
 3. Typical structure of a Spark Streaming Application

@@ -13,4 +13,8 @@ On your terminal
 For Mac/Linux users
 
 nc -l 9999
+
+For Windows users
+
+ncat -1k 9999
 ```

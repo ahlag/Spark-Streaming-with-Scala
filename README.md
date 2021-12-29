@@ -12,11 +12,11 @@
 Write out a sentence after opening a port, e.g. `Java is Awesome`
 On your terminal
 ```
-For Mac/Linux users
+## For Mac/Linux users
 
 nc -l 9999
 
-For Windows users
+## For Windows users
 
 ncat -1k 9999
 ```

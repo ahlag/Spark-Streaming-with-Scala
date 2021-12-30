@@ -1,4 +1,4 @@
-package guru.learningjournal.spark.examples
+package scala.learning.spark.examples
 
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
@@ -56,7 +56,7 @@ object KafkaStreamDemo extends Serializable {
       .option("startingOffsets", "earliest")
       .load()
 
-    //kafkaDF.printSchema()
+//    kafkaDF.printSchema()
 
     val valueDF = kafkaDF.select(from_json(col("value").cast("string"), schema).alias("value"))
 

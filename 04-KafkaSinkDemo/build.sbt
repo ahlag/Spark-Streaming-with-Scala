@@ -1,5 +1,5 @@
 name := "KafkaSinkDemo"
-organization := "guru.learningjournal"
+organization := "scala.learning"
 version := "0.1"
 scalaVersion := "2.12.10"
 autoScalaLibrary := false

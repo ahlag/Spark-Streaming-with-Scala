@@ -1,4 +1,4 @@
-package guru.learningjournal.spark.examples
+package scala.learning.spark.examples
 
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
@@ -6,13 +6,13 @@ import org.apache.spark.sql.functions.{col, expr, from_json, to_timestamp}
 import org.apache.spark.sql.streaming.Trigger
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
-object StreamingWatermarkDemo extends Serializable {
+object StreamingOuterJoinDemo extends Serializable {
   @transient lazy val logger: Logger = Logger.getLogger(getClass.getName)
 
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
       .master("local[3]")
-      .appName("Streaming Watermark Demo")
+      .appName("Streaming Outer JOin Demo")
       .config("spark.streaming.stopGracefullyOnShutdown", "true")
       .config("spark.sql.shuffle.partitions", 2)
       .getOrCreate()
@@ -58,9 +58,10 @@ object StreamingWatermarkDemo extends Serializable {
       .drop("CreatedTime")
       .withWatermark("ClickTime", "30 minute")
 
-    val joinExpr = "ImpressionID == ClickID"
+    val joinExpr = "ImpressionID == ClickID" +
+      " AND ClickTime BETWEEN ImpressionTime AND ImpressionTime + interval 15 minute"
 
-    val joinType = "inner"
+    val joinType = "leftOuter"
 
     val joinedDF = impressionsDF.join(clicksDF, expr(joinExpr), joinType)
 

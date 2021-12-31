@@ -1,4 +1,4 @@
-package guru.learningjournal.spark.examples
+package scala.learning.spark.examples
 
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
@@ -6,26 +6,25 @@ import org.apache.spark.sql.functions.{col, expr, from_json, to_timestamp}
 import org.apache.spark.sql.streaming.Trigger
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
-object StreamStreamJoinDemo extends Serializable {
+object StreamingWatermarkDemo extends Serializable {
   @transient lazy val logger: Logger = Logger.getLogger(getClass.getName)
 
   def main(args: Array[String]): Unit = {
-
     val spark = SparkSession.builder()
       .master("local[3]")
-      .appName("Stream Stream Join Demo")
+      .appName("Streaming Watermark Demo")
       .config("spark.streaming.stopGracefullyOnShutdown", "true")
       .config("spark.sql.shuffle.partitions", 2)
       .getOrCreate()
 
     val impressionSchema = StructType(List(
-      StructField("InventoryID", StringType),
+      StructField("ImpressionID", StringType),
       StructField("CreatedTime", StringType),
       StructField("Campaigner", StringType)
     ))
 
     val clickSchema = StructType(List(
-      StructField("InventoryID", StringType),
+      StructField("ImpressionID", StringType),
       StructField("CreatedTime", StringType)
     ))
 
@@ -39,10 +38,10 @@ object StreamStreamJoinDemo extends Serializable {
 
     val impressionsDF = kafkaImpressionDF
       .select(from_json(col("value").cast("string"), impressionSchema).alias("value"))
-      .selectExpr("value.InventoryID as ImpressionID", "value.CreatedTime", "value.Campaigner")
+      .selectExpr("value.ImpressionID", "value.CreatedTime", "value.Campaigner")
       .withColumn("ImpressionTime", to_timestamp(col("CreatedTime"), "yyyy-MM-dd HH:mm:ss"))
       .drop("CreatedTime")
-
+      .withWatermark("ImpressionTime", "30 minute")
 
     val kafkaClickDF = spark
       .readStream
@@ -54,14 +53,16 @@ object StreamStreamJoinDemo extends Serializable {
 
     val clicksDF = kafkaClickDF.select(
       from_json(col("value").cast("string"), clickSchema).alias("value"))
-      .selectExpr("value.InventoryID as ClickID", "value.CreatedTime")
+      .selectExpr("value.ImpressionID as ClickID", "value.CreatedTime")
       .withColumn("ClickTime", to_timestamp(col("CreatedTime"), "yyyy-MM-dd HH:mm:ss"))
       .drop("CreatedTime")
+      .withWatermark("ClickTime", "30 minute")
 
     val joinExpr = "ImpressionID == ClickID"
+
     val joinType = "inner"
 
-    val joinedDF = impressionsDF.join(clicksDF,expr(joinExpr), joinType)
+    val joinedDF = impressionsDF.join(clicksDF, expr(joinExpr), joinType)
 
     val outputQuery = joinedDF.writeStream
       .format("console")

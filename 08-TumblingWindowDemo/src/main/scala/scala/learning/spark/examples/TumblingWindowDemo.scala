@@ -1,4 +1,4 @@
-package guru.learningjournal.spark.examples
+package scala.learning.spark.examples
 
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
@@ -50,7 +50,7 @@ object TumblingWindowDemo extends Serializable {
 
     val outputDF = windowAggDF.select("window.start", "window.end", "TotalBuy", "TotalSell")
 
-    /*
+    /* Only in Batch
     val runningTotalWindow = Window.orderBy("end")
       .rowsBetween(Window.unboundedPreceding, Window.currentRow)
 

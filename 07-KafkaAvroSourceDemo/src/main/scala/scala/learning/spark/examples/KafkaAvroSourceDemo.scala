@@ -1,4 +1,4 @@
-package guru.learningjournal.spark.examples
+package scala.learning.spark.examples
 
 import java.nio.file.{Files, Paths}
 

@@ -12,7 +12,8 @@ object KafkaStreamDemo extends Serializable {
   def main(args: Array[String]): Unit = {
 
     val spark = SparkSession.builder()
-      .master("local[3]")
+//      .master("local[3]")
+      .master("spark://localhost:7077")
       .appName("Kafka Stream Demo")
       .config("spark.streaming.stopGracefullyOnShutdown", "true")
       .getOrCreate()

@@ -9,7 +9,8 @@ object StreamingWC {
 
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
-      .master("local[3]")
+    master("local[3]") // Standalone
+//      .master("spark://localhost:7077") // Uncomment this for to work on Docker Cluster
       .appName("Streaming Word Count")
       .config("spark.streaming.stopGracefullyOnShutdown", "true")
       .config("spark.sql.shuffle.partitions", 3)
